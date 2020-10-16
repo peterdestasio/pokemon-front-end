@@ -65,7 +65,7 @@ export class Card extends Component {
 
 
         return (
-            <div>
+            <div className="card-shape">
                 <div className="card-header">
                     <h1>{this.state.name}</h1>
                     {fav}
