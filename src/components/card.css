@@ -1,0 +1,9 @@
+.favourite-icon{        
+    margin-top: 30px;
+    margin-bottom: 60px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-around;
+}

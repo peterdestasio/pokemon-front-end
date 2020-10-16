@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import "./search.css";
-import { IoIosHeartEmpty } from "react-icons/io";
+import { Card }  from "./components/Card.js";
 
 class Search extends Component {
   state = {
-    searchValue: '',
-    pokemon: { }
+    searchValue: ''
   };
 
   handleOnChange = event => {
@@ -13,23 +12,24 @@ class Search extends Component {
   };
 
   handleSearch = () => {
+    this.setState({ pokemon: null });
     this.apiCall(this.state.searchValue);
   };
 
-  handleFavorites = () => {
-    localStorage.setItem('favourite', JSON.stringify(this.state.pokemon));
-   };
-
   apiCall = searchInput => {
-    var searchUrl = `https://localhost:44340/pokemon/${searchInput}`;
+    const searchUrl = `https://localhost:44340/pokemon/${searchInput}`;
     fetch(searchUrl)
-      .then(response => {
-        return response.json();
-      })
-      .then(jsonData => {
-        debugger;
-        this.setState({ pokemon: jsonData });
-      });
+      .then(async  response => {
+        const jsonData = await response.json();
+        if (!response.ok) {
+          const error = (jsonData && jsonData.message) || response.statusText;
+          return Promise.reject(error);
+        } else {
+          this.setState({ pokemon: jsonData });
+        }        
+      }).catch(error => {
+        console.error('There was an error!', error);
+    });;
   };
 
   render() {
@@ -44,18 +44,16 @@ class Search extends Component {
           value={this.state.searchValue}
         />
         <button onClick={this.handleSearch}>Search</button>
-        <IoIosHeartEmpty IoIosHeartEmpty onClick={this.handleFavorites}></IoIosHeartEmpty>
+
         {this.state.pokemon ? (
-          <div>
-              <div>
-                <h1>{this.state.pokemon.name}</h1>
-                <p>{this.state.pokemon.description}</p>
-              </div>
-          </div>
+          <Card
+          name = {this.state.pokemon.name}
+          description = {this.state.pokemon.description}
+          />
         ) : (
             <p>Try searching for a Pokemon</p>
           )}
-          
+
       </div>
     );
 
